@@ -128,29 +128,30 @@
 
 <body>
     <div class="content">
+        {% for s in seats %}
         <div class="card block">
             <div class="informations fleft">
                 <h5 class="caption title">aluno</h5>
-                <span class="caption bolder">cleiton rodrigues</span>
+                <span class="caption bolder">{{ alumn_name }}</span>
                 <div class="block bg-blue">
-                    <p class="caption title bolder event">A princesa Peach no reino encantado do sapateado</p>
+                    <p class="caption title bolder event">{{ event_title }}</p>
                 </div>
                 <div class="block">
                     <div class="box-small inline">
                         <h6 class="caption title">data</h6>
-                        <span class="caption bolder">20 dez</span>
+                        <span class="caption bolder">{{ event_date }}</span>
                     </div>
                     <div class="box-small inline">
                         <h6 class="caption title">horário</h6>
-                        <span class="caption bolder">20:00</span>
+                        <span class="caption bolder">{{ event_hour }}</span>
                     </div>
                     <div class="box-small inline">
                         <h6 class="caption title">setor</h6>
-                        <span class="caption bolder">galpão</span>
+                        <span class="caption bolder">{{ s.type }}</span>
                     </div>
                     <div class="box-small inline">
                         <h6 class="caption title">assento</h6>
-                        <span class="caption bolder">a42</span>
+                        <span class="caption bolder">{{ s.seat }}</span>
                     </div>
                 </div>
             </div>
@@ -163,25 +164,26 @@
                     <div class="block">
                         <div class="box-small inline">
                             <h6 class="caption title">data</h6>
-                            <span class="caption bolder">20 dez</span>
+                            <span class="caption bolder">{{ event_date }}</span>
                         </div>
                         <div class="box-small inline">
                             <h6 class="caption title">horário</h6>
-                            <span class="caption bolder">20:00</span>
+                            <span class="caption bolder">{{ event_hour }}</span>
                         </div>
                         <div class="box-small inline">
                             <h6 class="caption title">setor</h6>
-                            <span class="caption bolder">galpão</span>
+                            <span class="caption bolder">{{ s.type }}</span>
                         </div>
                         <div class="box-small inline">
                             <h6 class="caption title">assento</h6>
-                            <span class="caption bolder">a42</span>
+                            <span class="caption bolder">{{ s.seat }}</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="clearfix"></div>
         </div>
+        {% endfor %}
 
     </div>
 </body>

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytz
+import locale
 from django.utils import timezone
 from rest_framework import permissions as rf_permissions
 from rest_framework import status, viewsets
@@ -9,12 +10,13 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.response import Response
 
+from core.controllers import render_to_pdf
 from core.models import Event, Reserv, Seat, Token, User
 from rest.serializers import (EventSerializer, ReservSerializer,
                               SeatSerializer, TokenSerializer, UserSerializer)
 
-
 TZ = pytz.timezone('America/Sao_Paulo')
+locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -229,3 +231,25 @@ class ReservViewSet(viewsets.ModelViewSet):
         reserv.paid = True
         
         return Response(data={'success': 'Pagamento confirmado.'}, status=status.HTTP_200_OK)
+
+    @detail_route(methods=['get'], permission_classes=[rf_permissions.IsAuthenticated, rf_permissions.IsAdminUser], url_path='confirmation')
+    def get_confirmation(self, request, pk):
+        try:
+            reserv = Reserv.objects.get(pk=pk)
+        except Reserv.DoesNotExist:
+            raise NotFound('Reserva não encontrada')
+
+        seats = []
+        for seat in reserv.seats.all():
+            seats.append((seat.type_name, seat.slug))
+        
+        context = {
+            'alumn_name': reserv.alumn.first_name,
+            'event_title': reserv.event.title,
+            'event_date': reserv.event.slug_date,
+            'event_hour': reserv.event.slug_hour,
+            'seats': seats
+        }
+
+        pdf = render_to_pdf('booking-confirmation.html', context)
+        return Response(pdf, content_type='application/pdf')

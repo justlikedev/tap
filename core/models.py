@@ -85,6 +85,14 @@ class Event(models.Model):
     def __unicode__(self):
         return u'Event: {0}, {1}'.format(self.title, self.date)
 
+    @property
+    def slug_date(self):  # 20 DEZ
+        return self.date.strftime('%d %b')
+
+    @property
+    def slug_hour(self):  # 20:00
+        return self.date.strftime('%H:%M')
+
 
 class Seat(models.Model):
     row = models.CharField(max_length=10, null=False)
@@ -100,6 +108,10 @@ class Seat(models.Model):
     @property
     def is_reserved(self):
         return Reserv.objects.filter(seats__id=self.id).exists()
+
+    @property
+    def type_name(self):
+        return u'Balcão' if self.type is 0 else u'Palco'
 
     class Meta:
         verbose_name = u'Seat'
