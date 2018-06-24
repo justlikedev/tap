@@ -4,7 +4,7 @@
 from django.conf.urls import include, url
 from rest_framework import routers
 from rest_framework.authtoken import views as rf_views
-
+from tapacademy import settings
 from rest import views
 
 router = routers.DefaultRouter()
@@ -20,5 +20,6 @@ router.register(r'reservations', views.ReservViewSet, base_name='reserv')
 # Additionally the URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

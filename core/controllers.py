@@ -2,30 +2,44 @@
 # -*- coding: utf-8 -*-
 
 import os
-from io import BytesIO
 
+import pdfkit
 from django.http import HttpResponse
-from django.template import TemplateDoesNotExist
+from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from rest_framework.exceptions import NotFound, ValidationError
-from xhtml2pdf import pisa
 
 from tapacademy import settings
 
 
 def render_to_pdf(template_src, context={}):
-    # TEMPLATE_DIR = os.path.join(settings.TEMPLATE_DIRS[0], template_src)
-    
     try:
         template = get_template(template_src)
     except TemplateDoesNotExist:
         raise ValidationError('Template não encontrado.')
 
     html = template.render(context)
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode('ISO-8859-1')), result)
+    # return HttpResponse(html)
+
+    pdfkit.from_string(html, 'confirmation.pdf')
+    pdf = open('confirmation.pdf')
+
+    response = HttpResponse(pdf.read(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=confirmation.pdf'
     
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    pdf.close()
+    os.remove('confirmation.pdf')
     
-    return None
+    return response
+
+
+def render(template_src, context={}):
+    try:
+        template = get_template(template_src)
+    except TemplateDoesNotExist:
+        raise ValidationError('Template não encontrado.')
+
+    html = template.render(context)
+    
+    return HttpResponse(html)
+

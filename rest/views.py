@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import pytz
+import hashlib
 import locale
+from datetime import datetime
+
+import pytz
 from django.utils import timezone
 from rest_framework import permissions as rf_permissions
 from rest_framework import status, viewsets
@@ -10,7 +13,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.response import Response
 
-from core.controllers import render_to_pdf
+from core.controllers import render, render_to_pdf
 from core.models import Event, Reserv, Seat, Token, User
 from rest.serializers import (EventSerializer, ReservSerializer,
                               SeatSerializer, TokenSerializer, UserSerializer)
@@ -113,6 +116,12 @@ class ReservViewSet(viewsets.ModelViewSet):
         # if limit is greater than now the session is available
         return True
 
+    @staticmethod
+    def create_hash():
+        code = hashlib.sha1()
+        code.update(str(datetime.now()))
+        return code.hexdigest()[:10].upper()
+
     @list_route(methods=['post', 'get'], permission_classes=[rf_permissions.IsAuthenticated], url_path='add-seat')
     def add_seat(self, request):
         """
@@ -203,6 +212,8 @@ class ReservViewSet(viewsets.ModelViewSet):
             raise NotFound('Reserva não encontrada')
             
         reserv.finished = True
+        reserv.code = self.create_hash()
+        reserv.save()
         
         return Response(data={'success': 'Solicitação de reserva concluída.',
                               'info': 'Após a confirmação do pagamento você poderá imprimir seu comprovante de reserva.'}, 
@@ -241,15 +252,19 @@ class ReservViewSet(viewsets.ModelViewSet):
 
         seats = []
         for seat in reserv.seats.all():
-            seats.append((seat.type_name, seat.slug))
+            seats.append(seat.slug)
         
         context = {
-            'alumn_name': reserv.alumn.first_name,
+            'alumn_name': reserv.alumn.get_full_name,
             'event_title': reserv.event.title,
             'event_date': reserv.event.slug_date,
             'event_hour': reserv.event.slug_hour,
-            'seats': seats
+            'seats': seats,
+            'code': reserv.code
         }
 
+        # only to check template rendered
+        # return render('booking-confirmation.html', context)
+
         pdf = render_to_pdf('booking-confirmation.html', context)
-        return Response(pdf, content_type='application/pdf')
+        return pdf

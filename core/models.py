@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import pytz
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -13,6 +13,9 @@ from django.utils import timezone
 from core.managers import UserManager
 
 TZ = pytz.timezone('America/Sao_Paulo')
+
+
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, null=True)
@@ -35,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = u'Users'
 
     def get_full_name(self):
-        return u'{0}{1}'.format(self.first_name, self.last_name)
+        return u'{0} {1}'.format(self.first_name, self.last_name)
 
     def get_short_name(self):
         return self.first_name
@@ -129,6 +132,7 @@ class Reserv(models.Model):
     finished = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now_add=timezone.localtime(timezone.now(), timezone=TZ))
     session = models.DurationField(default=timedelta(minutes=20))
+    code = models.CharField(max_length=10, null=True)
 
     objects = models.Manager()
 
@@ -140,6 +144,6 @@ class Reserv(models.Model):
         return u'Reserv: {0} reserved for: {1}'.format(self.event, self.alumn)
 
     def save(self, *args, **kwargs):
-        # refresh the field update_at        
+        # refresh the field update_at
         self.updated_at = timezone.localtime(timezone.now(), timezone=TZ)
         super(Reserv, self).save(*args, **kwargs)

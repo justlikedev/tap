@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Cupom de Reserva</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i" rel="stylesheet">
     <style>
         body {
-            font-family: 'open sans', 'helvetica neue', helvetica, arial, sans-serif;
+            font-family: 'Lato', 'helvetica neue', helvetica, arial, sans-serif;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
-            color: #666;
+            color: #6e7a89;
         }
 
         .content {
@@ -21,7 +21,7 @@
 
         .card {
             width: 500px;
-            border: 1px solid #eee;
+            border: 1px solid #000;
         }
 
         .informations {
@@ -56,10 +56,14 @@
         }
 
         .cutted {
-            width: 130px;
+            width: 96px;
             border-left-style: dotted;
-            border-left-color: #666;
+            border-left-color: #000;
             min-height: 240px;
+        }
+
+        .card.block {
+            margin-bottom: 20px;
         }
 
         .block {
@@ -75,33 +79,30 @@
         }
 
         .box-small {
-            width: 24%;
+            width: 32%;
         }
 
-        .block.bg-blue {
+        .block.bg-red {
             margin: 20px -20px;
             padding: 20px;
-            border-right: 3px solid #009BA3;
-            max-width: 324px;
+            border-right: 3px solid #ad2231;
+            max-width: 358px;
         }
 
-        .bg-blue {
-            background-color: #009BA3;
+        .bg-red {
+            background-color: #ad2231;
         }
 
         .event {
-            letter-spacing: 0px;
-            word-spacing: 7px;
+            letter-spacing: 1px;
+            word-spacing: 10px;
             font-weight: 900;
             font-size: 20px;
-            color: #eee;
+            color: #fff;
         }
 
         .vertical {
-            transform: rotate(-90deg);
-            position: absolute;
-            left: 325px;
-            top: 60px;
+            display: inline-block;
         }
 
         .vertical.box-small {
@@ -109,31 +110,35 @@
         }
 
         .vertical>.block>.box-small {
-            width: 40%;
-            margin: 5px 0px;
+            width: 55%;
+            margin: 20px;
         }
 
         .brand img {
             width: 40%;
         }
 
-        .brand span {
-            position: absolute;
-            width: 10px;
-            top: 28px;
-            left: 426px;
+        .box-medium {
+            width: 45%;
         }
     </style>
 </head>
 
 <body>
     <div class="content">
-        {% for s in seats %}
+        {% for seat in seats %}
         <div class="card block">
             <div class="informations fleft">
-                <h5 class="caption title">aluno</h5>
-                <span class="caption bolder">{{ alumn_name }}</span>
-                <div class="block bg-blue">
+                <div class="block">
+                    <div class="box-medium inline">
+                        <h5 class="caption title">aluno</h5>
+                        <span class="caption bolder">{{ alumn_name }}</span>
+                    </div>
+                    <div class="box-medium inline">
+                        <span class="caption bolder fright">{{ code }}</span>
+                    </div>
+                </div>
+                <div class="block bg-red">
                     <p class="caption title bolder event">{{ event_title }}</p>
                 </div>
                 <div class="block">
@@ -146,20 +151,12 @@
                         <span class="caption bolder">{{ event_hour }}</span>
                     </div>
                     <div class="box-small inline">
-                        <h6 class="caption title">setor</h6>
-                        <span class="caption bolder">{{ s.type }}</span>
-                    </div>
-                    <div class="box-small inline">
                         <h6 class="caption title">assento</h6>
-                        <span class="caption bolder">{{ s.seat }}</span>
+                        <span class="caption bolder">{{ seat }}</span>
                     </div>
                 </div>
             </div>
             <div class="cutted fright">
-                <div class="brand">
-                    <img src="../static/images/tap-logo.png" alt="">
-                    <span class="caption">tap academy</span>
-                </div>
                 <div class="vertical">
                     <div class="block">
                         <div class="box-small inline">
@@ -171,12 +168,8 @@
                             <span class="caption bolder">{{ event_hour }}</span>
                         </div>
                         <div class="box-small inline">
-                            <h6 class="caption title">setor</h6>
-                            <span class="caption bolder">{{ s.type }}</span>
-                        </div>
-                        <div class="box-small inline">
                             <h6 class="caption title">assento</h6>
-                            <span class="caption bolder">{{ s.seat }}</span>
+                            <span class="caption bolder">{{ seat }}</span>
                         </div>
                     </div>
                 </div>
