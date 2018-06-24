@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_ROOT = BASE_DIR + '/core/static/images'
+DOC_ROOT = BASE_DIR + '/core/static/documents'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -147,3 +148,8 @@ MEDIA_URL = STATIC_URL + '/media/'
 STATIC_ROOT = BASE_DIR + '/project-static'
 
 AUTH_USER_MODEL = 'core.User'
+
+MAIL_USER = 'academiatap@gmail.com'
+MAIL_PASS = 'academia2tap'
+SMTP = 'smtp.gmail.com'
+SMTP_PORT = 587

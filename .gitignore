@@ -1,2 +1,4 @@
 *.sqlite3
 *.pyc
+*/static/documents/*.pdf
+launch.json
