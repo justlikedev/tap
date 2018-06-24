@@ -31,7 +31,7 @@ def render_to_pdf(template_src, context={}):
     try:
         pdfkit.from_string(html, full_path)
     except Exception as e:
-        raise ValidationError('Erro ao gerar o arquivo PDF.')
+        raise ValidationError('Erro ao gerar o arquivo PDF. %s' % e.message)
     
     pdf = open(os.path.join(filepath, filename))
 

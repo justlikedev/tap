@@ -271,9 +271,10 @@ class ReservViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['get'], permission_classes=[rf_permissions.IsAuthenticated, rf_permissions.IsAdminUser], url_path='send-confirmation')
     def send_confirmation_mail(self, request, pk):
-        context = selfUnicode .get_confirmation_context(pk)
+        context = self.get_confirmation_context(pk)
         error = send_mail(template_src='emails/booking-confirmation.html', context=context, 
             mail_from='no-reply@gmail.com', mail_to='rdgsdev@gmail.com')
         
         if not error:
             return Response(data={'success': 'Confirmação de Reserva enviada.'}, status=status.HTTP_200_OK)
+
