@@ -127,7 +127,7 @@ class ReservViewSet(viewsets.ModelViewSet):
         """
         create reserve or add seats to exist reserv
         """
-        
+
         # TODO is only for tests using browsable api and should be removed before send to production
         if request.method == 'GET':
             return Response(data='OK', status=status.HTTP_200_OK)
@@ -263,7 +263,7 @@ class ReservViewSet(viewsets.ModelViewSet):
             'seats': seats,
             'code': reserv.code
         }
-    
+
     @detail_route(methods=['get'], permission_classes=[rf_permissions.IsAuthenticated, rf_permissions.IsAdminUser], url_path='confirmation')
     def get_confirmation(self, request, pk):
         context = self.get_confirmation_context(pk)
@@ -274,7 +274,7 @@ class ReservViewSet(viewsets.ModelViewSet):
         context = self.get_confirmation_context(pk)
         error = send_mail(template_src='emails/booking-confirmation.html', context=context, 
             mail_from='no-reply@gmail.com', mail_to='rdgsdev@gmail.com')
-        
+
         if not error:
             return Response(data={'success': 'Confirmação de Reserva enviada.'}, status=status.HTTP_200_OK)
 

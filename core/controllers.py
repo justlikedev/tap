@@ -17,6 +17,19 @@ from tapacademy import settings
 
 
 def render_to_pdf(template_src, context={}):
+    """Generate a pdf file from template
+
+    Arguments:
+        template_src {string} -- path from template
+
+    Raises:
+        ValidationError -- Indicating error on getting the template
+        ValidationError -- Indicating error making pdf
+
+    Returns:
+        Response -- Response with the pdf file for download
+    """
+
     try:
         template = get_template(template_src)
     except TemplateDoesNotExist:
@@ -27,20 +40,20 @@ def render_to_pdf(template_src, context={}):
     filepath = settings.DOC_ROOT
     filename = uuid.uuid4().hex + '.pdf'
     full_path = os.path.join(filepath, filename)
-    
+
     try:
         pdfkit.from_string(html, full_path)
     except Exception as e:
         raise ValidationError('Erro ao gerar o arquivo PDF. %s' % e.message)
-    
+
     pdf = open(os.path.join(filepath, filename))
 
     response = HttpResponse(pdf.read(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=confirmation.pdf'
-    
+
     pdf.close()
     os.remove('confirmation.pdf')
-    
+
     return response
 
 
