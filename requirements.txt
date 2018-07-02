@@ -1,1 +1,11 @@
 python_full_version = "2.7.12"
+rest_framework==3.3.3
+rest_framework_nested
+rest_framework_filters
+rest_framework_gis
+pdfkit
+raven
+sendgrid
+django==1.9.6
+django_choices_enum
+django_filters
