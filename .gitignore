@@ -1,6 +1,7 @@
 *.sqlite3
 *.pyc
 */static/documents/*.pdf
+*.vscode
 launch.json
 
 # Byte-compiled / optimized / DLL files

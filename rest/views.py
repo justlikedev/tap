@@ -60,7 +60,7 @@ class EventViewSet(viewsets.ModelViewSet):
         # TODO is only for tests using browsable api and should be removed before send to production
         if request.method == 'GET':
             return Response(data='OK', status=status.HTTP_200_OK)
-        
+
         new_date = request.data.get('date')
 
         if not new_date:
@@ -81,7 +81,7 @@ class SeatViewSet(viewsets.ModelViewSet):
     queryset = Seat.objects.all()
     serializer_class = SeatSerializer
     permission_classes = (rf_permissions.IsAuthenticatedOrReadOnly, )
-    
+
 
 class ReservViewSet(viewsets.ModelViewSet):
     queryset = Reserv.objects.all()
@@ -93,26 +93,26 @@ class ReservViewSet(viewsets.ModelViewSet):
         """
         check if has available tickets for this alumn
         """
-        
+
         tickets = reserv.seats.count()
         check = tickets < max_tickets
-        
+
         if check:
             available = max_tickets - tickets
             return check, available
-        
+
         return check, 0
 
     @staticmethod
     def is_session_valid(reserv):
         limit = reserv.updated_at.minute + (int(reserv.session.total_seconds() / 60) % 60)
         now = timezone.localtime(timezone.now(), timezone=TZ).minute
-        
+
         # if limit is not greater than now, the reserv should be deleted and seats released
         if limit < now:
             reserv.delete()
             raise ValidationError('Sua sessão expirou e sua reserva não foi finalizada. Escolha novos assentos para continuar.')
-        
+
         # if limit is greater than now the session is available
         return True
 
@@ -173,7 +173,7 @@ class ReservViewSet(viewsets.ModelViewSet):
         """
         cancel reserve and release the seats
         """
-        
+
         # TODO is only for tests using browsable api and should be removed before send to production
         if request.method == 'GET':
             return Response(data='OK', status=status.HTTP_200_OK)
@@ -196,7 +196,7 @@ class ReservViewSet(viewsets.ModelViewSet):
         """
         finish the reserv
         """
-        
+
         # TODO is only for tests using browsable api and should be removed before send to production
         if request.method == 'GET':
             return Response(data='OK', status=status.HTTP_200_OK)
@@ -210,11 +210,11 @@ class ReservViewSet(viewsets.ModelViewSet):
             reserv = Reserv.objects.get(pk=pk)
         except Reserv.DoesNotExist: 
             raise NotFound('Reserva não encontrada')
-            
+
         reserv.finished = True
         reserv.code = self.create_hash()
         reserv.save()
-        
+
         return Response(data={'success': 'Solicitação de reserva concluída.',
                               'info': 'Após a confirmação do pagamento você poderá imprimir seu comprovante de reserva.'}, 
                         status=status.HTTP_200_OK)
@@ -224,7 +224,7 @@ class ReservViewSet(viewsets.ModelViewSet):
         """
         confirm payment received
         """
-        
+
         # TODO is only for tests using browsable api and should be removed before send to production
         if request.method == 'GET':
             return Response(data='OK', status=status.HTTP_200_OK)
@@ -236,11 +236,11 @@ class ReservViewSet(viewsets.ModelViewSet):
 
         try:
             reserv = Reserv.objects.get(pk=pk)
-        except Reserv.DoesNotExist: 
+        except Reserv.DoesNotExist:
             raise NotFound('Reserva não encontrada')
-            
+
         reserv.paid = True
-        
+
         return Response(data={'success': 'Pagamento confirmado.'}, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -253,7 +253,7 @@ class ReservViewSet(viewsets.ModelViewSet):
         seats = []
         for seat in reserv.seats.all():
             seats.append(seat.slug)
-        
+
         return {
             'alumn_name': reserv.alumn.get_full_name,
             'alumn_email': reserv.alumn.email,
